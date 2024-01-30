@@ -17,6 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'deAudioStorys',
     'enAudioStorys',
+    'deTextByEar',
+    'deGrammar',
 ]
 
 MIDDLEWARE = [

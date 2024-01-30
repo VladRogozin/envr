@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Word</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .audio-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .audio-player {
+background-color: #ff0000;
+            width: 100%;
+            max-width: 300px; /* Ширина плеера по вашему усмотрению */
+
+        }
+    </style>
+</head>
+<body class="container text-center mt-5">
+
+<h1 class="mb-4">Случайное слово</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <p class="card-text" id="random-text" style="display: none;">{{ random_item.text }}</p>
+        <p class="card-text" id="translation" style="display: none;"><strong>Translation:</strong> {{ random_item.translation_text }}</p>
+        <p class="card-text" id="keywords" style="display: none;"><strong>Keywords:</strong> {{ random_item.keywords }}</p>
+        <p class="card-text" id="translation-keywords" style="display: none;"><strong>Translation Keywords:</strong> {{ random_item.translation_keywords }}</p>
+        <p class="card-text"><strong>Level:</strong> {{ random_item.level }}</p>
+        <div class="audio-container mb-3">
+            <audio controls class="audio-player">
+                <source src="{{ random_item.audio.url }}" type="audio/mp3">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+</div>
+
+<div id="answer-section" class="mb-4">
+    <label for="user-answer">Введите перевод:</label>
+    <div class="input-group">
+        <input type="text" id="user-answer" class="form-control border-2 rounded-2">
+    </div>
+    <div class="row mt-2">
+        <div class="col mt-3">
+            <button onclick="checkAnswer()" class="btn btn-success">Проверить</button>
+        </div>
+        <div class="col mt-3">
+            <button onclick="toggleHint('random-text', 'translation')" class="btn btn-info">Подсказка</button>
+        </div>
+        <div class="col mt-3">
+            <button onclick="toggleHint('keywords', 'translation-keywords')" class="btn btn-dark">Ключевое слово</button>
+        </div>
+    </div>
+    <p id="feedback" class="mt-2"></p>
+</div>
+
+<script>
+    function checkAnswer() {
+        var userAnswer = document.getElementById('user-answer').value.trim().toLowerCase();
+        var correctAnswer = "{{ random_item.text|lower }}";
+
+        var feedbackElement = document.getElementById('feedback');
+
+        if (userAnswer === correctAnswer) {
+            feedbackElement.innerHTML = '<strong class="text-success">Правильно!</strong>';
+        } else {
+            feedbackElement.innerHTML = '<strong class="text-danger">Неправильно. Попробуйте еще раз.</strong>';
+        }
+    }
+
+    function toggleHint(elementId, secondID) {
+        var element = document.getElementById(elementId);
+        element.style.display = (element.style.display === 'none') ? 'block' : 'none';
+
+        if (secondID) {
+            var elementSecond = document.getElementById(secondID);
+            elementSecond.style.display = (elementSecond.style.display === 'none') ? 'block' : 'none';
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
