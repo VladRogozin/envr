@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'enAudioStorys',
     'deTextByEar',
     'deGrammar',
+    'deGuessGame',
 ]
 
 MIDDLEWARE = [
