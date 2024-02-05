@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результат проверки грамматики</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Результат проверки грамматики</h1>
+    <p id="userMessage">Ваше сообщение: {{ user_message }}</p>
+
+    {% if is_grammar_correct %}
+        <p style="color: green;">Грамматика верна!</p>
+    {% else %}
+        <p style="color: red;">Грамматика неверна.</p>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var errorPositions = {{ error_positions|safe }};
+        var userMessageElement = document.getElementById('userMessage');
+        var userMessage = userMessageElement.textContent;
+
+        errorPositions.forEach(function(position) {
+            var errorText = userMessage.substring(position[0], position[1]);
+            var replacement = '<span class="error">' + errorText + '</span>';
+            userMessage = userMessage.substring(0, position[0]) + replacement + userMessage.substring(position[1]);
+        });
+
+        userMessageElement.innerHTML = userMessage;
+    });
+</script>
+
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ваше приложение</title>
+</head>
+<body>
+    <h1>Случайное сообщение</h1>
+    <p>{{ message.message_original }}</p>
+    <p>{{ message.background_original }}</p>
+
+    <form onsubmit="checkGrammar(event)">
+        {% csrf_token %}
+        <label for="user_message">Введите ваше сообщение:</label>
+        <input type="text" id="user_message" name="user_message" required>
+        <button type="submit">Проверить грамматику</button>
+    </form>
+    <div id="aweyt"></div>
+    <div id="result"></div>
+
+    <script>
+        function checkGrammar(event) {
+            var userMessage = document.getElementById('user_message').value;
+
+            // Показываем сообщение ожидания
+            var resultDiv = document.getElementById('aweyt');
+            resultDiv.innerHTML = '<p style="color: blue;">Ожидание...</p>';
+
+            fetch('{% url "check_grammar_view" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ user_message: userMessage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResult(data);
+            })
+            .catch(error => {
+                console.error('Error during fetch:', error);
+                // Показываем сообщение об ошибке
+                resultDiv.innerHTML = '<p style="color: red;">Произошла ошибка при проверке грамматики.</p>';
+            })
+            .finally(() => {
+                // Скрываем сообщение ожидания
+                resultDiv.innerHTML = '';
+            });
+
+            event.preventDefault();
+        }
+
+function displayResult(data) {
+    console.log(data.user_message);  // Выводим данные в консоль для проверки
+    var userMessage = document.getElementById('user_message').value;
+    var resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = '';
+
+    if (data.user_message === userMessage) {
+    console.log("yj");
+        resultDiv.innerHTML = '<p style="color: green;">Грамматика верна!</p>';
+    } else {
+    console.log("ye");
+        resultDiv.innerHTML = '<p style="color: red;">Грамматика неверна.</p>';
+    }
+    console.log(resultDiv);
+}
+
+    </script>
+</body>
+
+</html>
+
+

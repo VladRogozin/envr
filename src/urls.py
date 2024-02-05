@@ -9,7 +9,10 @@ urlpatterns = [
     path('api/deGuessGame/', include('deGuessGame.urls')),
     path('api/deStorys/', include('deAudioStorys.urls')),
     path('api/deSpells/', include('deGrammar.urls')),
+    path('api/deMessagesReply/', include('deMessagesReply.urls')),
+
     path('api/enAudioStorys/', include('enAudioStorys.urls')),
+
     path('admin/', admin.site.urls),
 ]
 

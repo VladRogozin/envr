@@ -26,5 +26,9 @@ def show_random_word(request):
     data = DeTextByEar.objects.all()
     random_item = data.order_by('?').first()  # Выбор случайного элемента
 
+    # Вывод типа и структуры данных в консоль
+    print(f"Тип объекта random_item: {type(random_item)}")
+    print(f"Структура данных random_item: {random_item.__dict__}")
+
     return render(request, 'deTextByEar/random_list.html', {'random_item': random_item})
 

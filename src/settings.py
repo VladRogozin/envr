@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'deTextByEar',
     'deGrammar',
     'deGuessGame',
+    'deMessagesReply',
 ]
 
 MIDDLEWARE = [
