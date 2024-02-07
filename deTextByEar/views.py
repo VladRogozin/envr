@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import DeTextByEar
+from .models import DeTextByEar, Playlist
 from .serializers import DeTextByEarSerializer
 
 
@@ -24,11 +24,14 @@ class DeTextByEarCreateView(generics.CreateAPIView):
 
 def show_random_word(request):
     data = DeTextByEar.objects.all()
-    random_item = data.order_by('?').first()  # Выбор случайного элемента
+    random_item = data.order_by('?').first()
+    playlists = Playlist.objects.all()  # Получите список всех плейлистов
+    return render(request, 'deTextByEar/random_list.html', {'random_item': random_item, 'playlists': playlists})
 
-    # Вывод типа и структуры данных в консоль
-    print(f"Тип объекта random_item: {type(random_item)}")
-    print(f"Структура данных random_item: {random_item.__dict__}")
 
-    return render(request, 'deTextByEar/random_list.html', {'random_item': random_item})
-
+def random_word_from_playlist(request, playlist_id):
+    # Получите случайные слова из выбранного плейлиста
+    playlist = Playlist.objects.get(pk=playlist_id)
+    random_item = playlist.audios.order_by('?').first()  # Получаем случайное слово из плейлиста
+    playlists = Playlist.objects.all()  # Получите список всех плейлистов
+    return render(request, 'deTextByEar/random_list.html', {'random_item': random_item, 'playlists': playlists})

@@ -14,3 +14,13 @@ class DeTextByEar(models.Model):
     translation_keywords = models.CharField(max_length=100, default='null')
     audio = models.FileField(upload_to=audio_file_name)
     level = models.CharField(max_length=6, default='A2-B1')
+
+    def __str__(self):
+        return self.title
+
+class Playlist(models.Model):
+    name = models.CharField(max_length=255)
+    audios = models.ManyToManyField(DeTextByEar)
+
+    def __str__(self):
+        return self.name
