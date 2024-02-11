@@ -6,49 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Random Word</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-<style>
-    /* Стили для кнопки */
-    .null-button {
-        background-color: transparent; /* Убираем фон кнопки */
-        border: none; /* Убираем границу кнопки */
-        padding: 0; /* Убираем отступы внутри кнопки */
-        cursor: pointer; /* Делаем курсор указателем при наведении */
-        margin-top: 10px;
-    }
-    #seek-bar::-webkit-slider-runnable-track {
-    background-color: #a9cfae;
-}
-.fixed-bottom {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70%;
-    background-color: #3f4745;
-    border-radius: 20px; /* Закругление углов */
-    z-index: 999;
-    display: flex; /* Применяем flex-контейнер */
-    justify-content: center; /* Центрируем по горизонтали */
-    align-items: center; /* Центрируем по вертикали */
-}
-
-</style>
+    <link rel="stylesheet" href="{% static 'css/audio_player/audio_player.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles_project.css' %}">
 </head>
 <body class="container text-center mt-5" style="background-color: #262323; color: #FFFFFF;">
-
-<div class="row mb-3 ">
-    <div class="col-md-6">
-        <select class="form-select" id="playlist-select" style="background-color: #80a885;">
-            <option value="" selected disabled>Выберите плейлист</option>
-            {% for playlist in playlists %}
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <select class="form-select" id="playlist-select" style="background-color: #80a885;">
+                <option value="" selected disabled>Выберите плейлист</option>
+                {% for playlist in playlists %}
                 <option value="{% url 'random_word_from_playlist' playlist.id %}">{{ playlist.name }}</option>
-            {% endfor %}
-        </select>
+                {% endfor %}
+            </select>
+        </div>
     </div>
-</div>
-
-
-
 
     <div class="row mb-3">
         <div class="col-md-12">
@@ -59,7 +30,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="btn-group w-100 rounded">
-                <button type="button" class="btn btn-secondary dropdown-toggle w-100" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 0; #131313; color: #EDEDED;">
+                <button type="button" class="btn btn-secondary dropdown-toggle w-100" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 0; background-color: #131313; color: #EDEDED;">
                     Подсказка
                 </button>
                 <ul class="dropdown-menu w-100">
@@ -91,152 +62,39 @@
 
     <div class="row mt-5">
         <div class="col-md-12 mb-2">
-            <div class="input-group">
-                <input type="text" id="user-answer" class="form-control border-2 rounded-2">
+            <div class="">
+                <input type="text" id="user-answer" class="input-field">
             </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <button onclick="checkAnswer()" class="btn " style="background-color: #a9cfae;">Проверить</button>
+            <button onclick="checkAnswer()" class="btn color__light__green" >Перевірити</button>
         </div>
     </div>
 
-
-<div class="row fixed-bottom">
-    <div class="col-md-12 mb-4">
-        <div class="audio-container">
-            <audio id="audio-player" src="{{ random_item.audio.url }}" type="audio/mp3">
-                Your browser does not support the audio element.
-            </audio>
-            <div>
-                <button onclick="togglePlayPause()" id="play-pause-button" class="custom-button null-button">
-                    <img src="{% static 'img_svg/play.svg' %}" alt="Play Image">
-                </button>
-                <button class="null-button" onclick="changeSpeed(0.76)"><img src="{% static 'img_svg/slow.svg' %}" alt="Play Image"></button>
-                <button class="null-button" onclick="changeSpeed(0.88)"><img src="{% static 'img_svg/medium.svg' %}" alt="Play Image"></button>
-                <button class="null-button" onclick="changeSpeed(1)"><img src="{% static 'img_svg/fast.svg' %}" alt="Play Image"></button>
+    <div class="row mt-3">
+        <div class="col-md-12 mb-4 d-flex justify-content-center">
+            <div class="audio-container player-style align-items-center">
+                <audio id="audio-player" src="{{ random_item.audio.url }}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+                <div>
+                    <button onclick="togglePlayPause()" id="play-pause-button" class="null-button">
+                        <img src="{% static 'img_svg/play.svg' %}" alt="Play Image">
+                    </button>
+                    <button class="null-button" onclick="changeSpeed(0.76)"><img src="{% static 'img_svg/slow.svg' %}" alt="Play Image"></button>
+                    <button class="null-button" onclick="changeSpeed(0.88)"><img src="{% static 'img_svg/medium.svg' %}" alt="Play Image"></button>
+                    <button class="null-button" onclick="changeSpeed(1)"><img src="{% static 'img_svg/fast.svg' %}" alt="Play Image"></button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<script>
-    var audioPlayer = document.getElementById('audio-player');
-    var playPauseButton = document.getElementById('play-pause-button');
-    var seekBar = document.getElementById('seek-bar');
-    var isPlaying = false;
 
-    function togglePlayPause() {
-        if (!isPlaying) {
-            audioPlayer.play();
-            isPlaying = true;
-            playPauseButton.innerHTML = '<img src="{% static 'img_svg/paus.svg' %}" alt="Pause Image">';
-        } else {
-            audioPlayer.pause();
-            isPlaying = false;
-            playPauseButton.innerHTML = '<img src="{% static 'img_svg/play.svg' %}" alt="Play Image">';
-        }
-    }
-
-    function changeSpeed(speed) {
-        audioPlayer.playbackRate = speed;
-    }
-
-    function rewindAudio(seconds) {
-        var currentTime = audioPlayer.currentTime;
-        var newTime = Math.max(0, currentTime - seconds);
-        audioPlayer.currentTime = newTime;
-    }
-
-audioPlayer.addEventListener('timeupdate', function() {
-    var currentTime = audioPlayer.currentTime;
-    var duration = audioPlayer.duration;
-    seekBar.value = (currentTime / duration) * 100;
-});
-
-seekBar.addEventListener('input', function() {
-    var seekTo = audioPlayer.duration * (seekBar.value / 100);
-    audioPlayer.currentTime = seekTo;
-});
-
-    audioPlayer.addEventListener('ended', function() {
-        isPlaying = false;
-        playPauseButton.innerHTML = '<img src="{% static 'img_svg/play.svg' %}" alt="Play Image">';
-    });
-
-    changeSpeed(0.9);
-</script>
-<script>
-document.getElementById('playlist-select').addEventListener('change', function() {
-    var playlistId = this.value;
-    if (playlistId) {
-        window.location.href = playlistId;  // Перенаправляем на выбранный плейлист
-    }
-});
-function checkAnswer() {
-    var userAnswer = document.getElementById('user-answer').value.trim().toLowerCase();
-    var correctAnswer = "{{ random_item.text|lower }}";
-    var feedbackElement = document.getElementById('feedback');
-    var feedbackMessage = '';
-
-    var userAnswerFoTest = userAnswer.replace(/[.,!?]/g, '')
-    var correctAnswerFoTest = correctAnswer.replace(/[.,!?]/g, '')
-
-
-    if (userAnswerFoTest === correctAnswerFoTest) {
-        feedbackElement.innerHTML = '<strong class="text-success">Правильно!</strong>';
-    } else {
-        var userCorectWordsArray = userAnswer.split(' ');
-        var userWordsArray = userAnswer.split(' ').map(word => word.replace(/[.,!?]/g, ''));
-        var correctWordsArray = correctAnswer.split(' ').map(word => word.replace(/[.,!?]/g, ''));
-
-
-    function removeDuplicates(array1, array2, userWord) {
-        let trueArray = array1.filter(word => !array2.includes(word));
-        console.log(trueArray);
-        for (var j = 0; j < trueArray.length; j++) {
-            if (trueArray[j].length >= 2 && userWord.length >= 2) {
-                var firstTwoOfWord1 = trueArray[j].slice(0, 2);
-                var lastTwoOfWord2 = userWord.slice(0, 2);
-
-                if (firstTwoOfWord1 === lastTwoOfWord2) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
-
-    // Использование функции removeDuplicates в вашем цикле
-    for (var i = 0; i < userWordsArray.length; i++) {
-        if (correctWordsArray.includes(userWordsArray[i])) {
-            feedbackMessage += '<span style=" color: #3b3838;">' + userCorectWordsArray[i] + '</span> ';
-        } else if (removeDuplicates(correctWordsArray, userWordsArray, userWordsArray[i])) {
-            feedbackMessage += '<span class="" style=" color: #e9ed6d;">' + userCorectWordsArray[i] + '</span> ';
-        } else if (correctWordsArray.indexOf(userWordsArray[i]) === -1) {
-            // Если слово не совпадает, добавляем красное выделение
-            feedbackMessage += '<span class="" style=" color: #cf1111;">' + userCorectWordsArray[i] + '</span> ';
-        }
-    }
-
-    feedbackElement.innerHTML = '<strong style=" color: #3b3838;">' + feedbackMessage + '</strong>';
-
-    }
-}
-
-    function toggleHint(elementId, secondID) {
-        var element = document.getElementById(elementId);
-        element.style.display = (element.style.display === 'none') ? 'block' : 'none';
-
-        if (secondID) {
-            var elementSecond = document.getElementById(secondID);
-            elementSecond.style.display = (elementSecond.style.display === 'none') ? 'block' : 'none';
-        }
-    }
-</script>
+<script src="{% static 'js/js_audio_player/audio_player.js' %}"></script>
+<script src="{% static 'js/playlists/playlist.js' %}"></script>
+<script src="{% static 'js/answer_checker/answer_checker.js' %}"></script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

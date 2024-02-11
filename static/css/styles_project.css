@@ -1,0 +1,25 @@
+.color__light__green {
+    background-color: #a9cfae;
+}
+
+.input-field {
+    /* Фоновый градиент */
+    background-color: linear-gradient(to right, #575757, #163329);
+    /* Цвет текста */
+    color: #fff;
+    /* Цвет границы */
+    border-color: #a9cfae;
+    /* Округление углов */
+    border-radius: 10px;
+    /* Внутренние отступы */
+    padding: 10px;
+    /* Плавный переход */
+    transition: 0.3s ease;
+}
+
+.input-field:focus, .input-field:active {
+    /* Изменение цвета границы при фокусе */
+    border-color: #a9cfae;
+    background-image: linear-gradient(to right, #163329, #575757);
+}
+

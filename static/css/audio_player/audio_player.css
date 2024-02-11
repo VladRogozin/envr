@@ -1,0 +1,22 @@
+/* Стили для кнопки */
+.null-button {
+    background-color: transparent; /* Убираем фон кнопки */
+    border: none; /* Убираем границу кнопки */
+    padding: 0; /* Убираем отступы внутри кнопки */
+    cursor: pointer; /* Делаем курсор указателем при наведении */
+}
+
+.player-style {
+    background-image: linear-gradient(to left, #575757, #163329); /* Градиент от белого к светло-серому */
+    width: 20%;
+    border: 5px solid #a9cfae;
+    border-radius: 20px;
+    padding: 15px;
+}
+
+@media (max-width: 500px) {
+    .player-style {
+        width: 90%; /* Изменяем ширину на 80% при ширине экрана менее 500px */
+        padding: 10px; /* Изменяем отступы */
+    }
+}
