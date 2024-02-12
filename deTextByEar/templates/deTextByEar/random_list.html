@@ -1,76 +1,67 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Word</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/audio_player/audio_player.css' %}">
-    <link rel="stylesheet" href="{% static 'css/styles_project.css' %}">
-</head>
-<body class="container text-center mt-5" style="background-color: #262323; color: #FFFFFF;">
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <select class="form-select" id="playlist-select" style="background-color: #80a885;">
-                <option value="" selected disabled>Выберите плейлист</option>
-                {% for playlist in playlists %}
-                <option value="{% url 'random_word_from_playlist' playlist.id %}">{{ playlist.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
+{% extends 'index.html' %}
+    {% load static %}
 
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <p id="feedback" class="mt-2 p-3" style="font-size: 25px; font-weight: bold; background-color: #80a885; border-radius: 10px; border: 2px solid black; height: 100px;"></p>
-        </div>
-    </div>
 
-    <div class="row">
+
+
+{% block content %}
+<!-- Connecting CSS files -->
+<link rel="stylesheet" href="{% static 'css/audio_player/audio_player.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles_project.css' %}">
+<!-- Connecting CSS files -->
+    <div class="row mb-3">
+        <h1>{{ playlist }}</h1>
+    </div>
+    <div class="row mb-3">
         <div class="col-md-8">
-            <div class="btn-group w-100 rounded">
-                <button type="button" class="btn btn-secondary dropdown-toggle w-100" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 0; background-color: #131313; color: #EDEDED;">
-                    Подсказка
-                </button>
-                <ul class="dropdown-menu w-100">
-                    <li class="text-center border-bottom border-3 border-dark">
-                        <p class="card-text" id="random-text">{{ random_item.text }}</p>
-                    </li>
-                    <li class="text-center">
-                        <p class="card-text" id="translation">{{ random_item.translation_text }}</p>
-                    </li>
-                </ul>
+            <div id="feedback" class="mt-2 p-3 field-feedback">
+                <img src="{% static 'img_svg/6md.gif' %}" alt="Play Image">
             </div>
         </div>
         <div class="col-md-4">
-            <div class="btn-group w-100 rounded">
-                <button type="button" class="btn btn-secondary dropdown-toggle w-100" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 0; color: #EDEDED;">
-                    Ключевое слово
-                </button>
-                <ul class="dropdown-menu w-100">
-                    <li class="text-center border-bottom border-3 border-dark">
-                        <p class="card-text" id="keywords">{{ random_item.keywords }}</p>
-                    </li>
-                    <li class="text-center">
-                        <p class="card-text" id="translation-keywords">{{ random_item.translation_keywords }}</p>
-                    </li>
-                </ul>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group w-100 rounded">
+                        <button type="button" id="text-hint-button" class="one_button dropdown-toggle w-100" onclick="displayTextHint()" aria-expanded="false">
+                            Подсказка текст
+                        </button>
+                        <ul class="dropdown-menu w-100">
+                            <li class="text-center">
+                                <p class="card-text" id="random-text">{{ random_item.text }}</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-2">
+                    <div class="btn-group w-100 rounded">
+                        <button type="button" id="translation-hint-button" class="one_button dropdown-toggle w-100" onclick="displayTranslationHint()" aria-expanded="false">
+                            Подсказка перевод
+                        </button>
+                        <ul class="dropdown-menu w-100">
+                            <li class="text-center border-bottom border-3 border-dark">
+                                <p class="card-text" id="translation">{{ random_item.translation_text }}</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+
+
 
     <div class="row mt-5">
         <div class="col-md-12 mb-2">
             <div class="">
-                <input type="text" id="user-answer" class="input-field">
+                <input type="text" id="user-answer" class="input-field" data-random-text="{{ random_item.text|lower }}">
             </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <button onclick="checkAnswer()" class="btn color__light__green" >Перевірити</button>
+            <button id="user-answer-button" onclick="checkAnswer()" class="one_button" >Перевірити</button>
         </div>
     </div>
 
@@ -95,11 +86,35 @@
 <script src="{% static 'js/js_audio_player/audio_player.js' %}"></script>
 <script src="{% static 'js/playlists/playlist.js' %}"></script>
 <script src="{% static 'js/answer_checker/answer_checker.js' %}"></script>
+<script>
+var previousTextHint = "";
+var previousTranslationHint = "";
 
+function displayTextHint() {
+    var textHintButton = document.getElementById('text-hint-button');
+    if (textHintButton.classList.contains("one_button")) {
+        previousTextHint = textHintButton.innerText; // Сохраняем текущий текст кнопки
+        textHintButton.innerText = "{{ random_item.text }}";
+        textHintButton.classList.replace("one_button", "two_button");
+    } else {
+        textHintButton.innerText = previousTextHint; // Возвращаем сохраненный текст
+        textHintButton.classList.replace("two_button", "one_button");
+    }
+}
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
-</body>
-</html>
+function displayTranslationHint() {
+    var translationHintButton = document.getElementById('translation-hint-button');
+    if (translationHintButton.classList.contains("one_button")) {
+        previousTranslationHint = translationHintButton.innerText; // Сохраняем текущий текст кнопки
+        translationHintButton.innerText = "{{ random_item.translation_text }}";
+        translationHintButton.classList.replace("one_button", "two_button");
+    } else {
+        translationHintButton.innerText = previousTranslationHint; // Возвращаем сохраненный текст
+        translationHintButton.classList.replace("two_button", "one_button");
+    }
+}
+</script>
+{% endblock %}
+
 
 

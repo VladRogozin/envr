@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+    {% load static %}
+
+
+
+{% block content %}
+<!-- Connecting CSS files -->
+<link rel="stylesheet" href="{% static 'css/styles_project.css' %}">
+<!-- Connecting CSS files -->
+
+    <h1 class="mt-5 mb-4">Playlists</h1>
+    <div class="row">
+        {% for playlist, random_de_text in random_data %}
+        <div class="col-md-3 mb-4">
+            <div class="card border-3 mb-3 color__dark__green" style="max-width: 14rem;">
+                <div class="card-header text-light">
+                    {{ playlist.name }}
+                </div>
+                <div class="card-body">
+                    <blockquote class="blockquote">
+                        <footer class="blockquote-footer text-light">{{ random_de_text.title }}</footer>
+                        <a href="{% url 'random_word_from_playlist' playlist.id %}" class="btn color__light__green" >Go to Playlist</a>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+
+
+        {% endfor %}
+    </div>
+
+
+
+<script src="{% static 'js/js_audio_player/audio_player.js' %}"></script>
+{% endblock %}

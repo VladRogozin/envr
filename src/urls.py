@@ -12,7 +12,7 @@ urlpatterns = [
     path('api/deMessagesReply/', include('deMessagesReply.urls')),
 
     path('api/enAudioStorys/', include('enAudioStorys.urls')),
-
+    path('account/', include('accounts.urls')),
     path('admin/', admin.site.urls),
 ]
 

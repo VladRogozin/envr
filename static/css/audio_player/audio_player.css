@@ -7,8 +7,8 @@
 }
 
 .player-style {
-    background-image: linear-gradient(to left, #575757, #163329); /* Градиент от белого к светло-серому */
-    width: 20%;
+    background-image: linear-gradient(to right, #344C11, #AEC09A); /* Градиент от белого к светло-серому */
+    width: 40%;
     border: 5px solid #a9cfae;
     border-radius: 20px;
     padding: 15px;
@@ -20,3 +20,4 @@
         padding: 10px; /* Изменяем отступы */
     }
 }
+

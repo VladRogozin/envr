@@ -6,7 +6,7 @@ from django.db import models
 
 @admin.register(DeTextByEar)
 class DeTextByEarAdmin(admin.ModelAdmin):
-    list_display = ('title', 'text', 'translation_text', 'keywords', 'translation_keywords', 'audio', 'level')
+    list_display = ('title', 'text', 'translation_text', 'audio', 'level')
     search_fields = ('title', 'text', 'translation_text')
     formfield_overrides = {
         models.FileField: {'widget': forms.FileInput(attrs={'accept': 'audio/*'})},
