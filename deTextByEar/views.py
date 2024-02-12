@@ -1,8 +1,9 @@
 import random
-
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from rest_framework import generics
-from .models import DeTextByEar, Playlist
+from .models import DeTextByEar, Playlist, UserSaveDeTextByEar
 from .serializers import DeTextByEarSerializer
 from django.views.generic import ListView
 
@@ -48,9 +49,48 @@ def show_random_word(request):
     playlists = Playlist.objects.all()  # Получите список всех плейлистов
     return render(request, 'deTextByEar/random_list.html', {'random_item': random_item, 'playlists': playlists})
 
-
+@login_required
 def random_word_from_playlist(request, playlist_id):
     # Получите случайные слова из выбранного плейлиста
     playlist = Playlist.objects.get(pk=playlist_id)
     random_item = playlist.audios.order_by('?').first()  # Получаем случайное слово из плейлиста
     return render(request, 'deTextByEar/random_list.html', {'random_item': random_item, 'playlist': playlist})
+
+@login_required
+def favorite_list(request):
+    favorites = UserSaveDeTextByEar.objects.filter(user=request.user)
+    return render(request, 'deTextByEar/favorite_list.html', {'favorites': favorites})
+
+
+@login_required
+def random_word_from_favorites(request):
+    favorites = UserSaveDeTextByEar.objects.filter(user=request.user)
+    if favorites.exists():
+        random_item = favorites.order_by('?').first().detext_by_ear
+        return render(request, 'deTextByEar/random_list.html', {'random_item': random_item})
+    else:
+        return render(request, 'deTextByEar/no_favorites.html')
+
+
+@login_required
+def add_to_favorites(request, detext_id):
+    try:
+        detext = DeTextByEar.objects.get(pk=detext_id)
+        if UserSaveDeTextByEar.objects.filter(user=request.user, detext_by_ear=detext).exists():
+            response_data = {'success': False, 'message': 'Bже додано в обране.'}
+        else:
+            favorite_detext = UserSaveDeTextByEar(user=request.user, detext_by_ear=detext)
+            favorite_detext.save()
+            response_data = {'success': True, 'message': 'Успішно додано в обране.'}
+    except DeTextByEar.DoesNotExist:
+        response_data = {'success': False, 'message': 'Детекст не знайдено'}
+    except Exception as e:
+        response_data = {'success': False, 'message': f'Помилка під час додавання детексту в обране: {str(e)}'}
+
+    return JsonResponse(response_data)
+
+@login_required
+def remove_from_favorites(request, favorite_id):
+    favorite_detext = UserSaveDeTextByEar.objects.get(pk=favorite_id)
+    favorite_detext.delete()
+    return redirect('favorites')

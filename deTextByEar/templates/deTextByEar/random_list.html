@@ -59,11 +59,16 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <button id="user-answer-button" onclick="checkAnswer()" class="one_button" >Перевірити</button>
-        </div>
+<div class="row">
+    <div class="col-md-12">
+        <button id="user-answer-button" onclick="checkAnswer()" class="one_button" >Перевірити</button>
+        <span style="margin-left: 20px;"></span> <!-- Отступ между кнопками -->
+        <button class="null-button" id="add-to-favorites-btn" data-detext-id="{{ random_item.id }}" style="width: 25px; height: 25px;">
+            <img src="{% static 'img_svg/save.svg' %}" alt="Play Image" style="width: 100%; height: 100%;">
+        </button>
     </div>
+</div>
+
 
     <div class="row mt-3">
         <div class="col-md-12 mb-4 d-flex justify-content-center">
@@ -113,6 +118,46 @@ function displayTranslationHint() {
         translationHintButton.classList.replace("two_button", "one_button");
     }
 }
+
+
+    document.getElementById('add-to-favorites-btn').addEventListener('click', function() {
+        var detextId = this.getAttribute('data-detext-id');
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/deTextByEar/add_to_favorites/' + detextId + '/');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}'); // CSRF токен для защиты от CSRF атак
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    showAlert('success', response.message); // Выводим сообщение об успехе
+                } else {
+                    showAlert('danger', response.message); // Выводим сообщение об ошибке
+                }
+            } else {
+                showAlert('danger', 'Помилка під час виконання запиту'); // Выводим сообщение об ошибке
+            }
+        };
+        xhr.send();
+    });
+
+    function showAlert(type, message) {
+        // Создаем элемент для алерта
+        var alertElement = document.createElement('div');
+        alertElement.className = 'alert alert-' + type + ' position-fixed bottom-0 end-0 m-3'; // Добавляем классы Bootstrap для стилизации
+
+        // Добавляем текст сообщения
+        var messageElement = document.createTextNode(message);
+        alertElement.appendChild(messageElement);
+
+        // Добавляем алерт на страницу
+        document.body.appendChild(alertElement);
+
+        // Скрываем алерт через 5 секунд
+        setTimeout(function() {
+            alertElement.remove();
+        }, 5000);
+    }
 </script>
 {% endblock %}
 
