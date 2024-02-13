@@ -8,19 +8,20 @@
 <!-- Connecting CSS files -->
 <link rel="stylesheet" href="{% static 'css/audio_player/audio_player.css' %}">
 <link rel="stylesheet" href="{% static 'css/styles_project.css' %}">
+<link rel="stylesheet" href="{% static 'css/text_by_hear_game.css' %}">
 <!-- Connecting CSS files -->
-    <div class="row mb-3">
+    <div class="row mb-3 main-name">
         <h1>{{ playlist }}</h1>
     </div>
-    <div class="row mb-3">
-        <div class="col-md-8">
+    <div class="row mb-3 ">
+        <div class="col-md-8 my-3">
             <div id="feedback" class="mt-2 p-3 field-feedback">
                 <img src="{% static 'img_svg/6md.gif' %}" alt="Play Image">
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 my-3">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 mb-3">
                     <div class="btn-group w-100 rounded">
                         <button type="button" id="text-hint-button" class="one_button dropdown-toggle w-100" onclick="displayTextHint()" aria-expanded="false">
                             Подсказка текст
@@ -61,6 +62,7 @@
 
 <div class="row">
     <div class="col-md-12">
+
         <button id="user-answer-button" onclick="checkAnswer()" class="one_button" >Перевірити</button>
         <span style="margin-left: 20px;"></span> <!-- Отступ между кнопками -->
         <button class="null-button" id="add-to-favorites-btn" data-detext-id="{{ random_item.id }}" style="width: 25px; height: 25px;">
@@ -87,6 +89,10 @@
             </div>
         </div>
     </div>
+<a href="" onclick="window.location.reload();" class="btn btn-link text-decoration-none next-button-click">
+    <img src="{% static 'img_svg/right.svg' %}" alt="Play Image">
+</a>
+
 
 <script src="{% static 'js/js_audio_player/audio_player.js' %}"></script>
 <script src="{% static 'js/playlists/playlist.js' %}"></script>

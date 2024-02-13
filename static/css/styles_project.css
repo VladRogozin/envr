@@ -9,6 +9,23 @@
     background-color: #344C11;
 }
 
+.main-name {
+    text-shadow: 0 4px 8px rgba(174, 198, 112, 1);
+    letter-spacing: 2px; /* Увеличиваем расстояние между буквами */
+    animation: shadowAnimation 2s infinite alternate; /* Анимация тени */
+}
+
+
+
+@keyframes shadowAnimation {
+    0% {
+        text-shadow: 0 0px 8px rgba(174, 198, 112, 1);
+    }
+    100% {
+        text-shadow: 0 0px 30px rgba(201, 214, 182, 1);
+    }
+}
+
 .input-field {
     /* Фоновый градиент */
     background-color: linear-gradient(to right, #575757, #163329);

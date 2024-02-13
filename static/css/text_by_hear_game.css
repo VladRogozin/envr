@@ -1,0 +1,18 @@
+.next-button-click {
+    width: 50px;
+    height: 100px;
+    position: absolute;
+    top: 40%;
+    right: 0%;
+    transform: translate(0, -50%);
+    background-color: rgba(128, 128, 128, 0.1); /* Полупрозрачный серый цвет фона */
+}
+
+
+.next-button-click:hover {
+    background-color: rgba(128, 128, 128, 0.3); /* Полупрозрачный серый цвет фона */
+}
+.next-button-click img {
+    width: 100%;
+    height: 100%;
+}

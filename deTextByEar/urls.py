@@ -11,5 +11,6 @@ urlpatterns = [
     path('add_to_favorites/<int:detext_id>/', add_to_favorites, name='add_to_favorites'),
     path('remove_from_favorites/<int:favorite_id>/', remove_from_favorites, name='remove_from_favorites'),
     path('random_word_from_favorites/', random_word_from_favorites, name='random_word_from_favorites'),
+    path('stat_test/<int:playlist_id>/', render_game_page, name='get_playlist_test'),
 
 ]

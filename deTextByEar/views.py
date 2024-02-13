@@ -1,7 +1,7 @@
 import random
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import generics
 from .models import DeTextByEar, Playlist, UserSaveDeTextByEar
 from .serializers import DeTextByEarSerializer
@@ -94,3 +94,17 @@ def remove_from_favorites(request, favorite_id):
     favorite_detext = UserSaveDeTextByEar.objects.get(pk=favorite_id)
     favorite_detext.delete()
     return redirect('favorites')
+
+
+
+
+def render_game_page(request, playlist_id):
+    playlist = get_object_or_404(Playlist, pk=playlist_id)
+    audios = [{'audio': audio.audio.url, 'text': audio.text} for audio in playlist.audios.all()]
+    context = {
+        'playlist': audios,
+        'playlistName': playlist.name,
+    }
+
+    print(audios)
+    return render(request, 'deTextByEar/start_test.html', context)

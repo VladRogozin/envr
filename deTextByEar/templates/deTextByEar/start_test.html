@@ -1,0 +1,123 @@
+{% extends 'index.html' %}
+    {% load static %}
+{% block content %}
+<!-- Connecting CSS files -->
+<link rel="stylesheet" href="{% static 'css/audio_player/audio_player.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles_project.css' %}">
+<link rel="stylesheet" href="{% static 'css/text_by_hear_game.css' %}">
+<!-- Connecting CSS files -->
+
+
+<h1 class="main-name">{{ playlistName }}</h1>
+
+<h3 id="current-sentence">Аудио перше, поїхали!</h3>
+
+<div id="game-container">
+    <div class="row mt-3">
+        <div class="col-md-12 mb-4 d-flex justify-content-center">
+            <div class="audio-container player-style align-items-center">
+                <audio id="audio-player" src="{{ random_item.audio.url }}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+                <div>
+                    <button onclick="togglePlayPause()" id="play-pause-button" class="null-button">
+                        <img src="{% static 'img_svg/play.svg' %}" alt="Play Image">
+                    </button>
+                    <button class="null-button" onclick="changeSpeed(0.76)"><img src="{% static 'img_svg/slow.svg' %}" alt="Play Image"></button>
+                    <button class="null-button" onclick="changeSpeed(0.88)"><img src="{% static 'img_svg/medium.svg' %}" alt="Play Image"></button>
+                    <button class="null-button" onclick="changeSpeed(1)"><img src="{% static 'img_svg/fast.svg' %}" alt="Play Image"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-12 mb-2">
+            <div class="">
+                <input type="text" id="user-input" class="input-field">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button id="submit-btn" class="one_button" >Перевірити</button>
+        </div>
+    </div>
+</div>
+
+<div id="score-container">
+    <h2><span id="score"></span></h2>
+</div>
+
+<div id="previous-result" class="fixed-bottom bg-dark text-white p-2" style="display: none;">
+    <span id="previous-score"></span>
+</div>
+
+
+{{ playlist | json_script:"playlist_data" }}
+
+<script>
+    const playlist = JSON.parse(document.getElementById('playlist_data').textContent);
+    console.log(playlist)
+    let currentIndex = 0;
+    let score = 0;
+
+    const audioPlayer = document.getElementById('audio-player');
+    const userInput = document.getElementById('user-input');
+    const submitBtn = document.getElementById('submit-btn');
+    const scoreDisplay = document.getElementById('score');
+    const currentSentence = document.getElementById('current-sentence');
+
+    function playAudio(audioUrl) {
+        audioPlayer.src = audioUrl;
+    }
+
+    function togglePlayPause() {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+            document.getElementById('play-pause-button').innerHTML = '<img src="{% static 'img_svg/paus.svg' %}" alt="Pause Image">';
+        } else {
+            audioPlayer.pause();
+            document.getElementById('play-pause-button').innerHTML = '<img src="{% static 'img_svg/play.svg' %}" alt="Play Image">';
+        }
+    }
+
+    function changeSpeed(speed) {
+        audioPlayer.playbackRate = speed;
+    }
+
+function checkAnswer() {
+    const userAnswer = userInput.value.trim().toLowerCase().replace(/[.,?!-]/g, '');
+    const correctAnswer = playlist[currentIndex].text.toLowerCase().replace(/[.,?!-]/g, '');
+
+    if (userAnswer === correctAnswer) {
+        score++;
+        scoreDisplay.textContent = score;
+    }
+
+    const previousScoreElement = document.getElementById('previous-score');
+    previousScoreElement.textContent = userAnswer === correctAnswer ? 'Правильно' : `Неправильно, правильный ответ: ${correctAnswer}`;
+
+    currentIndex++;
+    if (currentIndex < playlist.length) {
+        playAudio(playlist[currentIndex].audio);
+    } else {
+        alert('Result: ' + score);
+    }
+
+    if (currentIndex < playlist.length) {
+        currentSentence.innerText = `Аудио ${currentIndex + 1} з ${playlist.length}`;
+    }
+
+
+    const previousResultDiv = document.getElementById('previous-result');
+    previousResultDiv.style.display = 'block'; // Показываем результат предыдущей итерации
+
+    userInput.value = '';
+}
+
+    submitBtn.addEventListener('click', checkAnswer);
+
+    // Начало игры
+    playAudio(playlist[currentIndex].audio);
+</script>
+{% endblock %}
