@@ -81,6 +81,7 @@
             <div class="col text-right">
                 <ul class="navbar-menu" id="navbarMenu">
                     <li><a href="{% url 'show_data' %}"><img src="{% static 'img_svg/play-circle.svg' %}" alt="Play Image"></a></li>
+                    <li><a href="{% url 'verb_list' %}"><img src="{% static 'img_svg/brain.svg' %}" alt="Play Image"></a></li>
                     <li><a href="{% url 'playlist_list' %}"><img src="{% static 'img_svg/list.svg' %}" alt="Play Image"></a></li>
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'favorites' %}"><img src="{% static 'img_svg/save.svg' %}" alt="Play Image"></a></li>

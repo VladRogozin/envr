@@ -1,0 +1,126 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/deVerbs/playlists_verbs.css' %}">
+
+    <div class="container blokCard">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                {% if random_words %}
+                    <div id="word-container">
+                        {% for word in random_words %}
+                            <div class="word {% if forloop.first %}active{% endif %}">
+                                <h2>{{ word.word }}</h2>
+                                <img src="{{ word.image.url }}" alt="Image" class="size-image">
+                                <p><strong>Translation:</strong> {{ word.translation }}</p>
+                                <p><strong>Verb:</strong> {{ word.verb }}</p>
+                                <p><strong>Prefix:</strong> {{ word.prefix }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-primary mr-2" onclick="prevWord()">Previous</button>
+                        <button class="btn btn-primary" onclick="nextWord()">Next</button>
+
+                    </div>
+
+                {% else %}
+                    <p>No words available.</p>
+                {% endif %}
+            </div>
+        </div>
+    <div class="row mt-5 justify-content-center my_border-dotted">
+        <button id="grammarButton" class="btn btn-success" onclick="checkGrammar()">Больше информации</button>
+        <div id="grammarResult" class="mt-3"></div>
+    </div>
+
+
+    <div class="row mt-5 justify-content-center my_border-dotted">
+        <button id="exampleButton" class="btn btn-success" onclick="examplePost()">Пример использования</button>
+        <div id="exampleResult" class="mt-3"></div>
+    </div>
+</div>
+
+<script>
+    let currentWordIndex = 0;
+    const words = document.querySelectorAll('.word');
+    const grammarButton = document.getElementById('grammarButton');
+    const exampleButton = document.getElementById('exampleButton');
+
+    function showWord(index) {
+        words.forEach((word, i) => {
+            if (i === index) {
+                word.classList.add('active');
+            } else {
+                word.classList.remove('active');
+            }
+        });
+    }
+
+    function prevWord() {
+        currentWordIndex = Math.max(currentWordIndex - 1, 0);
+        showWord(currentWordIndex);
+    }
+
+    function nextWord() {
+        currentWordIndex = Math.min(currentWordIndex + 1, words.length - 1);
+        showWord(currentWordIndex);
+    }
+
+    function checkGrammar() {
+        const userMessage = document.querySelector('.word.active h2').textContent;
+        grammarButton.disabled = true; // Disable the button
+        grammarButton.innerHTML = 'Ожидайте...'; // Change button text to "Ожидайте..."
+
+        fetch('/api/deVerbs/check_grammar/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({ user_message: userMessage }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const grammarResultElement = document.getElementById('grammarResult');
+            grammarResultElement.innerHTML = '<p>' + data.user_message + '</p>';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            grammarButton.disabled = false; // Enable the button
+            grammarButton.innerHTML = 'Больше информации'; // Restore button text
+        });
+    }
+
+
+    function examplePost() {
+        const userMessage = document.querySelector('.word.active h2').textContent;
+        exampleButton.disabled = true; // Disable the button
+        exampleButton.innerHTML = 'Ожидайте...'; // Change button text to "Ожидайте..."
+
+        fetch('/api/deVerbs/example_post/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({ user_message: userMessage }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            const exampleResultElement = document.getElementById('exampleResult');
+            exampleResultElement.innerHTML = '<p>' + data.user_message + '</p>';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            exampleButton.disabled = false; // Enable the button
+            exampleButton.innerHTML = 'Пример использования'; // Restore button text
+        });
+    }
+</script>
+{% endblock %}

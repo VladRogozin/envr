@@ -19,9 +19,9 @@ INSTALLED_APPS = [
     'deAudioStorys',
     'enAudioStorys',
     'deTextByEar',
-    'deGrammar',
     'deGuessGame',
     'deMessagesReply',
+    'deVerbs',
     'accounts',
 ]
 

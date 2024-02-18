@@ -1,0 +1,27 @@
+.size-image {
+    width: 50%; /* Размер на компьютере (половина от оригинального размера) */
+}
+
+@media (max-width: 767px) {
+    .size-image {
+        width: 80%; /* Размер на мобильном устройстве (80 меньше оригинального размера) */
+    }
+}
+
+.word {
+    display: none;
+}
+
+.word.active {
+    display: block;
+}
+
+.word-word.hide {
+    display: none;
+}
+
+.my_border-dotted {
+    padding: 10px; /* Устанавливаем одинаковые отступы по всем сторонам */
+    border: 1px dotted #344C11;
+    border-radius: 10px; /* Регулируем радиус ваших углов по желанию */
+}
